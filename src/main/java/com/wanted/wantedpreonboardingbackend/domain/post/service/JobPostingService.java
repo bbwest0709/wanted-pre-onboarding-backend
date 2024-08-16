@@ -52,20 +52,11 @@ public class JobPostingService {
     @Transactional
     public void update(Long jobPostId, JobPostingUpdateRequestDTO request) {
         JobPosting existingJobPosting = getJobPostingById(jobPostId);
-        Company company = getCompanyById(request.getCompanyId());
 
         validateCompanyMatch(jobPostId, request.getCompanyId());
 
-        JobPosting updatedJobPosting = JobPosting.builder()
-                .jobPostId(existingJobPosting.getJobPostId())
-                .company(company)
-                .position(request.getPosition() != null ? request.getPosition() : existingJobPosting.getPosition())
-                .reward(request.getReward() != null ? request.getReward() : existingJobPosting.getReward())
-                .description(request.getDescription() != null ? request.getDescription() : existingJobPosting.getDescription())
-                .technologies(request.getTechnologies() != null ? request.getTechnologies() : existingJobPosting.getTechnologies())
-                .build();
-
-        jobPostingRepository.save(updatedJobPosting);
+        JobPosting entity = request.toEntity();
+        existingJobPosting.update(entity);
     }
 
     /**
@@ -144,14 +135,14 @@ public class JobPostingService {
     }
 
     /**
-     * companyId가 작성한 채용공고가 맞는지 확인
+     * 수정 요청한 companyId가 작성한 채용공고가 맞는지 확인
      *
      * @param jobPostId
-     * @param conpanyId
+     * @param requestCompanyId
      * @throws 해당 회사가 작성하지 않은 채용 공고일 경우 오류 코드와 함께 예외 발생
      */
-    private void validateCompanyMatch(Long jobPostId, Long conpanyId) {
-        if (!jobPostingRepository.existsByIdAndCompanyId(jobPostId, conpanyId)) {
+    private void validateCompanyMatch(Long jobPostId, Long requestCompanyId) {
+        if (!jobPostingRepository.existsByIdAndCompanyId(jobPostId, requestCompanyId)) {
             throw new JobFlatformException(ErrorCode.INVALID_COMPANY_ACCESS);
         }
     }

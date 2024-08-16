@@ -1,5 +1,6 @@
 package com.wanted.wantedpreonboardingbackend.domain.post.dto.request;
 
+import com.wanted.wantedpreonboardingbackend.domain.post.entity.JobPosting;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,5 +22,15 @@ public class JobPostingUpdateRequestDTO {
         this.description = description;
         this.technologies = technologies;
     }
+
+    public JobPosting toEntity() {
+        return JobPosting.builder()
+                .position(this.position)
+                .reward(this.reward)
+                .description(this.description)
+                .technologies(this.technologies)
+                .build();
+    }
+
 
 }

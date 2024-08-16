@@ -44,4 +44,12 @@ public class JobPosting extends BaseTime {
         this.technologies = technologies;
     }
 
+    public JobPosting update(JobPosting jobPosting) {
+        Optional.ofNullable(jobPosting.getPosition()).ifPresent(s -> this.position = s);
+        Optional.ofNullable(jobPosting.getReward()).ifPresent(s -> this.reward = s);
+        Optional.ofNullable(jobPosting.getDescription()).ifPresent(s -> this.description = s);
+        Optional.ofNullable(jobPosting.technologies).ifPresent(s -> this.technologies = s);
+        return this;
+    }
+
 }
